@@ -1,5 +1,6 @@
 package com.ravl.auth.presentation.register
 
+import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -19,6 +20,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -42,13 +45,41 @@ import com.ravl.core.presentation.designsystem.components.GradientBackground
 import com.ravl.core.presentation.designsystem.components.RuniqueActionButton
 import com.ravl.core.presentation.designsystem.components.RuniquePasswordTextField
 import com.ravl.core.presentation.designsystem.components.RuniqueTextField
+import com.ravl.core.presentation.ui.ObserveAsEvents
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-
 fun RegisterScreenRot(
-    viewModel: RegisterViewModel = koinViewModel()
+    viewModel: RegisterViewModel = koinViewModel(),
+    onSignInClick: () -> Unit,
+    onSuccessfulRegistration: () -> Unit,
+
 ) {
+    val context = LocalContext.current
+    val keyboardController = LocalSoftwareKeyboardController.current
+
+    ObserveAsEvents(flow = viewModel.events) { event ->
+        when(event){
+            is RegisterEvent.Error -> {
+                keyboardController?.hide()
+                Toast.makeText(
+                    context,
+                    event.error.asString(context),
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+            RegisterEvent.RegistrationSuccess -> {
+                keyboardController?.hide()
+                Toast.makeText(
+                    context,
+                    R.string.registration_successful,
+                    Toast.LENGTH_LONG
+                ).show()
+                onSuccessfulRegistration()
+            }
+        }
+    }
+
     RegisterScreen(
         state = viewModel.state,
         onAction = viewModel::onAction
@@ -74,42 +105,42 @@ fun RegisterScreen(
                 text = stringResource(id = R.string.create_account),
                 style = MaterialTheme.typography.headlineMedium
             )
-//            val annotatedString = buildAnnotatedString {
-//                withStyle(
-//                    style = SpanStyle(
-//                        fontFamily = Poppins,
-//                        color = RuniqueGray
-//                    )
-//                ) {
-//                    append(stringResource(id = R.string.already_have_account) + " ")
-//                    pushStringAnnotation(
-//                        tag = "clickable_text",
-//                        annotation = stringResource(id = R.string.login)
-//                    )
-//                    withStyle(
-//                        style = SpanStyle(
-//                            fontWeight = FontWeight.SemiBold,
-//                            color = MaterialTheme.colorScheme.primary,
-//                            fontFamily = Poppins
-//                        )
-//                    ) {
-//                        append(stringResource(id = R.string.login))
-//                    }
-//                }
-//            }
-//
-//            ClickableText(
-//                text = annotatedString,
-//                onClick = { offset ->
-//                    annotatedString.getStringAnnotations(
-//                        tag = "clickable_text",
-//                        start = offset,
-//                        end = offset
-//                    ).firstOrNull()?.let {
-//                        onAction(RegisterAction.OnLoginClick)
-//                    }
-//                }
-//            )
+            val annotatedString = buildAnnotatedString {
+                withStyle(
+                    style = SpanStyle(
+                        fontFamily = Poppins,
+                        color = RuniqueGray
+                    )
+                ) {
+                    append(stringResource(id = R.string.already_have_account) + " ")
+                    pushStringAnnotation(
+                        tag = "clickable_text",
+                        annotation = stringResource(id = R.string.login)
+                    )
+                    withStyle(
+                        style = SpanStyle(
+                            fontWeight = FontWeight.SemiBold,
+                            color = MaterialTheme.colorScheme.primary,
+                            fontFamily = Poppins
+                        )
+                    ) {
+                        append(stringResource(id = R.string.login))
+                    }
+                }
+            }
+
+            ClickableText(
+                text = annotatedString,
+                onClick = { offset ->
+                    annotatedString.getStringAnnotations(
+                        tag = "clickable_text",
+                        start = offset,
+                        end = offset
+                    ).firstOrNull()?.let {
+                        onAction(RegisterAction.OnLoginClick)
+                    }
+                }
+            )
             Spacer(modifier = Modifier.height(48.dp))
             RuniqueTextField(
                 modifier = Modifier.fillMaxWidth(),
