@@ -2,7 +2,6 @@ package com.ravl.runique
 
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -11,38 +10,40 @@ import androidx.navigation.navigation
 import com.ravl.auth.presentation.intro.IntroScreenRoot
 import com.ravl.auth.presentation.login.LoginScreenRoot
 import com.ravl.auth.presentation.register.RegisterScreenRot
+import com.ravl.run.presentation.overview.RunOverviewScreenRot
 
 @Composable
 fun NavigationRoot(
-    navController: NavHostController
+    navController: NavHostController,
+    isLoggedIn: Boolean = false
 ) {
 
     NavHost(
         navController = navController,
-        startDestination = "auth"
-    ){
+        startDestination = if (isLoggedIn) "run" else "auth"
+    ) {
         authGraph(navController)
         runGraph(navController)
     }
 }
 
-private fun NavGraphBuilder.authGraph(navController: NavHostController){
+private fun NavGraphBuilder.authGraph(navController: NavHostController) {
     navigation(
-       startDestination = "intro",
+        startDestination = "intro",
         route = "auth"
-    ){
-        composable("intro"){
+    ) {
+        composable("intro") {
             IntroScreenRoot(
                 onSignUpClick = { navController.navigate("register") },
                 onSignInClick = { navController.navigate("login") }
             )
         }
 
-        composable("register"){
+        composable("register") {
             RegisterScreenRot(
                 onSignInClick = {
-                    navController.navigate("login"){
-                        popUpTo("register"){
+                    navController.navigate("login") {
+                        popUpTo("register") {
                             inclusive = true
                             saveState = true
                         }
@@ -54,17 +55,17 @@ private fun NavGraphBuilder.authGraph(navController: NavHostController){
                 }
             )
         }
-        
-        composable("login"){
+
+        composable("login") {
             LoginScreenRoot(onLoginSuccess = {
-                navController.navigate("run"){
-                    popUpTo("auth"){
+                navController.navigate("run") {
+                    popUpTo("auth") {
                         inclusive = true
                     }
                 }
             }, onSignUpClick = {
-                navController.navigate("register"){
-                    popUpTo("login"){
+                navController.navigate("register") {
+                    popUpTo("login") {
                         inclusive = true
                         saveState = true
                     }
@@ -75,13 +76,13 @@ private fun NavGraphBuilder.authGraph(navController: NavHostController){
     }
 }
 
-private fun NavGraphBuilder.runGraph(navController: NavHostController){
+private fun NavGraphBuilder.runGraph(navController: NavHostController) {
     navigation(
         startDestination = "run_overview",
         route = "run"
     ) {
         composable("run_overview") {
-            Text("Run overview")
+            RunOverviewScreenRot()
         }
 
     }
