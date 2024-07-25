@@ -7,6 +7,8 @@ import com.ravl.auth.data.EmailPatternValidator
 import com.ravl.auth.domain.PatternValidator
 import com.ravl.auth.domain.UserDataValidator
 import com.ravl.runique.MainViewModel
+import com.ravl.runique.RuniqueApp
+import kotlinx.coroutines.CoroutineScope
 import org.koin.android.ext.koin.androidApplication
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.androidx.viewmodel.dsl.viewModelOf
@@ -23,6 +25,10 @@ val appModule = module{
             EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
             EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
         )
+    }
+
+    single<CoroutineScope>{
+        (androidApplication() as RuniqueApp).applicationScope
     }
 
     viewModelOf(::MainViewModel)
