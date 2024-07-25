@@ -18,6 +18,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.ravl.core.presentation.designsystem.RunIcon
 import com.ravl.core.presentation.designsystem.RuniqueTheme
+import com.ravl.core.presentation.designsystem.StartIcon
+import com.ravl.core.presentation.designsystem.StopIcon
 
 @Composable
 fun RuniqueFloatingActionButton(
@@ -28,7 +30,7 @@ fun RuniqueFloatingActionButton(
     iconSize: Dp = 25.dp
 ) {
     Box(
-        modifier = Modifier
+        modifier = modifier
             .size(75.dp)
             .clip(CircleShape)
             .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.3f))
@@ -46,7 +48,7 @@ fun RuniqueFloatingActionButton(
                 imageVector = icon,
                 contentDescription = contentDescription,
                 tint = MaterialTheme.colorScheme.onPrimary,
-                modifier = Modifier.size(iconSize)
+                modifier = Modifier.size(iconSize).align(Alignment.Center)
             )
         }
     }
@@ -57,7 +59,7 @@ fun RuniqueFloatingActionButton(
 private fun RuniqueFloatingActionButtonPreview() {
     RuniqueTheme {
         RuniqueFloatingActionButton(
-            icon = RunIcon,
+            icon = StopIcon,
             onClick = {  }
         )
     }

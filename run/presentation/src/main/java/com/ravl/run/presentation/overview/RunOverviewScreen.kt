@@ -16,6 +16,7 @@ import com.ravl.core.presentation.designsystem.LogoIcon
 import com.ravl.core.presentation.designsystem.LogoutIcon
 import com.ravl.core.presentation.designsystem.RunIcon
 import com.ravl.core.presentation.designsystem.RuniqueTheme
+import com.ravl.core.presentation.designsystem.StartIcon
 import com.ravl.core.presentation.designsystem.components.RuniqueFloatingActionButton
 import com.ravl.core.presentation.designsystem.components.RuniqueScaffold
 import com.ravl.core.presentation.designsystem.components.RuniqueToolbar
@@ -25,10 +26,17 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun RunOverviewScreenRot(
+    onStartRunClick: () -> Unit,
     viewModel: RunOverviewViewModel = koinViewModel()
 ) {
     RunOverviewScreen(
-        onAction = viewModel::onAction
+        onAction = {action ->
+            when(action){
+                RunOverviewAction.OnStartClick -> onStartRunClick()
+                else -> Unit
+            }
+            viewModel.onAction(action)
+        }
     )
 }
 
